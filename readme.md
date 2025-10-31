@@ -7,7 +7,7 @@ Quick setup guide for implementing QUBO, BQM, DQM, CQM, and Non-Linear (NL) Solv
 ## 1. System Requirements
 
 
-- **Python 3.9-3.11** (required) or later, you can get it on https://www.python.org/downloads/
+- **Python 3.9-3.11** (recommended) or later, you can get it on https://www.python.org/downloads/
 - **PyCharm** (recommended) (Community or Professional Edition), you can get it on https://www.jetbrains.com/pycharm/download/
 - pip Python's package manager
 
@@ -95,8 +95,6 @@ In PyCharm Terminal, run:
 ```bash
 dwave ping
 ```
-
-Run in PyCharm: **Right-click → Run 'test_connection'**
 
 If the connection is successful, a message similar to the following will appear. If the connection failed, recreate the dwave config again.
 
