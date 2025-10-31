@@ -1,5 +1,3 @@
-This file is written in markdown markup language, learn more about viewing markdown files on https://www.google.com/search?q=how+to+view+markdown+files
-
 # Quantum Lab Pre-Installation Guide
 
 Quick setup guide for implementing QUBO, BQM, DQM, CQM, and Non-Linear (NL) Solver solutions on D-Wave quantum annealer using PyCharm IDE (recommended).
