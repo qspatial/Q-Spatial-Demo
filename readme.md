@@ -153,7 +153,7 @@ To run your code, **Right click** on the Python file **OneScoopAtMost.py** and c
 1. Open [https://cloud.dwavesys.com/leap/examples/222052595](https://cloud.dwavesys.com/leap/examples/222052595)
 2. Click **Open GitHub Codespace**.
 
-![Codespace](./Figures/codespace.png)
+![Codespace](codespace.png)
 
 ### 5.2 Create a New Codespace
 
