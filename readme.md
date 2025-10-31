@@ -1,3 +1,5 @@
+This file is written in markdown markup language, learn more about viewing markdown files on https://www.google.com/search?q=how+to+view+markdown+files
+
 # Quantum Lab Pre-Installation Guide
 
 Quick setup guide for implementing QUBO, BQM, DQM, CQM, and Non-Linear (NL) Solver solutions on D-Wave quantum annealer using PyCharm IDE (recommended).
@@ -7,7 +9,7 @@ Quick setup guide for implementing QUBO, BQM, DQM, CQM, and Non-Linear (NL) Solv
 ## 1. System Requirements
 
 
-- **Python 3.9-3.11** (recommended) or later, you can get it on https://www.python.org/downloads/
+- **Python 3.9-3.11** (required) or later, you can get it on https://www.python.org/downloads/
 - **PyCharm** (recommended) (Community or Professional Edition), you can get it on https://www.jetbrains.com/pycharm/download/
 - pip Python's package manager
 
@@ -96,6 +98,8 @@ In PyCharm Terminal, run:
 dwave ping
 ```
 
+Run in PyCharm: **Right-click → Run 'test_connection'**
+
 If the connection is successful, a message similar to the following will appear. If the connection failed, recreate the dwave config again.
 
 ```bash
@@ -139,5 +143,52 @@ Write or copy your code in the newly created file **OneScoopAtMost.py**. For thi
 ### 4.2 Run your code
 
 To run your code, **Right click** on the Python file **OneScoopAtMost.py** and click **Run OneScoopAtMost**. Your terminal will show the printed results.
+
+---
+
+## 5. Run the Example in GitHub Codespaces
+
+### 5.1 Open the Sample and Start Codespaces
+
+1. Open [https://cloud.dwavesys.com/leap/examples/222052595](https://cloud.dwavesys.com/leap/examples/222052595)
+2. Click **Open GitHub Codespace**.
+
+![Codespace](./Figures/codespace.png)
+
+### 5.2 Create a New Codespace
+
+1. Keep defaults and click **Create codespace**.
+
+
+### 5.3 Authorize Ocean SDK
+
+In the Codespaces terminal, run:
+
+```bash
+dwave setup --oob
+```
+
+1. Open the shown URL and click **AUTHORIZE**.
+
+2. Copy the authorization code and paste it back into the terminal.
+
+### 5.4 Run the Graph Partitioning Demo
+
+In the Codespaces terminal, run:
+
+```bash
+python graph_partitioning.py
+```
+
+### 5.5 Inspect Qubit Connectivity
+
+Add the following code to `graph_partitioning.py`:
+
+```python
+import dwave.inspector
+
+# After you define `sampler` and submit/solve
+dwave.inspector.show(sampler)
+```
 
 ---
