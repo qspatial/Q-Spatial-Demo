@@ -14,56 +14,46 @@ def create_spatial_graph(grid_size=5):
 
 def solve_graph_partitioning_cqm(graph, num_partitions=3, min_partition_size=None, time_limit=5):
 
-    num_nodes = len(graph.nodes())
+    nodes = list(graph.nodes())
+    edges = list(graph.edges())
+    partitions = list(range(num_partitions))
 
-    if min_partition_size is None:
-        min_partition_size = num_nodes // num_partitions
+    # Set minimum partition size
+    s = min_partition_size if min_partition_size else len(nodes) // num_partitions
 
-    has_remainder = (num_nodes % num_partitions) != 0
+    # Create binary variables
+    x = [[Binary(f'x_{{{i},{l}}}') for l in partitions] for i in nodes]
 
+    # Create CQM
     cqm = ConstrainedQuadraticModel()
 
-    x = {(i, l): Binary(f'x_{i}_{l}')
-         for i in graph.nodes()
-         for l in range(num_partitions)}
+    # Build objective function
+    min_obj_funs = []
+    for i, j in edges:
+        for l in partitions:
+            min_obj_funs.append(graph[i][j].get('weight', 1.0) *
+                                (x[i][l] + x[j][l] - 2 * x[i][l] * x[j][l]))
 
+    cqm.set_objective(sum(min_obj_funs))
 
-    objective = 0
+    # Add one-hot constraints for each node
+    for i in nodes:
+        cqm.add_discrete([f'x_{{{i},{l}}}' for l in partitions],
+                         label=f'one-hot-node-{i}')
 
-    for i, j in graph.edges():
+    # Add partition size constraints
+    for l in partitions:
+        cqm.add_constraint(
+            sum(x[i][l] for i in range(len(nodes))) >= s,
+            label=f'partition-size-{l}'
+        )
 
-        W_ij = graph[i][j].get('weight', 1.0)
-
-        edge_in_same_partition = sum(x[(i, l)] * x[(j, l)] for l in range(num_partitions))
-        edge_is_cut = 1 - edge_in_same_partition
-        objective += W_ij * edge_is_cut
-
-    cqm.set_objective(objective)
-
-    for i in graph.nodes():
-        cqm.add_discrete([f'x_{i}_{l}' for l in range(num_partitions)],
-                        label=f'one_hot_node_{i}')
-
-    if has_remainder:
-        # Use inequality when nodes don't divide evenly
-        for l in range(num_partitions):
-            partition_total = sum(x[(i, l)] for i in graph.nodes())
-            cqm.add_constraint(partition_total >= min_partition_size,
-                              label=f'size_partition_{l}')
-    else:
-        # Use equality when nodes divide evenly (forces exact partition sizes)
-        for l in range(num_partitions):
-            partition_total = sum(x[(i, l)] for i in graph.nodes())
-            cqm.add_constraint(partition_total == min_partition_size,
-                              label=f'size_partition_{l}')
-
-
+    # Submit to D-Wave solver
     print("Submitting CQM to D-Wave solver...")
     print(f"  Time limit: {time_limit} seconds")
-
     sampler = LeapHybridCQMSampler()
     sampleset = sampler.sample_cqm(cqm,
-                                   label='Spatial Graph Partitioning - CQM',
+                                   label='Graph Partitioning - CQM',
                                    time_limit=time_limit)
 
     best_solution = sampleset.first
@@ -74,21 +64,11 @@ def solve_graph_partitioning_cqm(graph, num_partitions=3, min_partition_size=Non
 
     # Convert solution to node-partition mapping
     node_assignment = {}
-    for i in graph.nodes():
-        assigned = False
-        for l in range(num_partitions):
-            if best_solution.sample[f'x_{i}_{l}'] == 1:
+    for i in nodes:
+        for l in partitions:
+            if best_solution.sample.get(f'x_{{{i},{l}}}', 0) == 1:
                 node_assignment[i] = l
-                assigned = True
                 break
-
-        # Debug: check if node wasn't assigned
-        if not assigned:
-            print(f"  WARNING: Node {i} not assigned to any partition!")
-
-    # Verify all nodes are assigned
-    if len(node_assignment) != num_nodes:
-        print(f"  ERROR: Only {len(node_assignment)}/{num_nodes} nodes assigned!")
 
     return node_assignment, best_solution
 
