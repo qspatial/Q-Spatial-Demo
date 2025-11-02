@@ -1,0 +1,20 @@
+Graph Partitioning Results
+==================================================
+
+Partition Summary:
+  Partition 0: ['A', 'B', 'E', 'F', 'G'] (5 nodes)
+  Partition 1: ['C', 'D', 'H', 'L', 'O'] (5 nodes)
+  Partition 2: ['I', 'J', 'K', 'M', 'N'] (5 nodes)
+
+Cut Edges:
+  B - C (weight: 2.0)
+  C - G (weight: 1.8)
+  E - I (weight: 1.7)
+  F - J (weight: 1.1)
+  G - H (weight: 1.6)
+  G - K (weight: 2.0)
+  K - L (weight: 1.4)
+  N - O (weight: 2.1)
+
+Total edges cut: 8/23
+Total cut weight: 13.70
